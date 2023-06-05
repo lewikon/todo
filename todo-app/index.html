@@ -15,10 +15,10 @@
             createTodoItem,
             switchTodoItemDone,
             deleteTodoItem
-        } from './local.js';
+        } from './api.js';
         const owner = 'Я';
-        ( () => {
-            const todoItemList = getTodoList(owner);
+        (async () => {
+            const todoItemList = await getTodoList(owner);
             createTodoApp(document.getElementById('todo'), {
                 title: 'Мои дела',
                 owner,
