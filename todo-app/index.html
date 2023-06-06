@@ -9,24 +9,45 @@
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" 
     crossorigin="anonymous">
     <script type="module">
-        import {createTodoApp} from './view.js';
-        import {
-            getTodoList,
-            createTodoItem,
-            switchTodoItemDone,
-            deleteTodoItem
-        } from './api.js';
-        const owner = 'Я';
-        (async () => {
-            const todoItemList = await getTodoList(owner);
+        async function apiLoad() {
+                const importAPI = await import('./api.js')
+                const owner = 'Я';
+                (async () => {
+            const todoItemList = await importAPI.getTodoList(owner);
             createTodoApp(document.getElementById('todo'), {
                 title: 'Мои дела',
                 owner,
                 todoItemList,
-                onCreateFormSubmit: createTodoItem,
-                onDoneClick: switchTodoItemDone,
-                onDeleteClick: deleteTodoItem,});
+                onCreateFormSubmit: importAPI.createTodoItem,
+                onDoneClick: importAPI.switchTodoItemDone,
+                onDeleteClick: importAPI.deleteTodoItem,});
         })();
+            }
+        import {createTodoApp} from './view.js';
+        document.getElementById("storage").addEventListener('click',() => {
+            let apiStorage = false;
+            if(!apiStorage) {
+             apiLoad();  
+            }
+            apiStorage = true;
+        })
+        // import {
+        //     getTodoList,
+        //     createTodoItem,
+        //     switchTodoItemDone,
+        //     deleteTodoItem
+        // } from './api.js';
+        // const owner = 'Я';
+        // (async () => {
+        //     const todoItemList = await getTodoList(owner);
+        //     createTodoApp(document.getElementById('todo'), {
+        //         title: 'Мои дела',
+        //         owner,
+        //         todoItemList,
+        //         onCreateFormSubmit: createTodoItem,
+        //         onDoneClick: switchTodoItemDone,
+        //         onDeleteClick: deleteTodoItem,});
+        // })();
     </script>
     <title>TODO</title>
 </head>
@@ -36,6 +57,7 @@
             <a href="index.html" class="nav-link">Мои дела</a>
             <a href="mom.html" class="nav-link">Дела для мамы</a>
             <a href="dad.html" class="nav-link">Дела для папы</a>
+            <button class="btn btn-primary" id="storage">Сменить хранилище</button>
         </nav>
     </div>
     <div id="todo" class="container"></div>
