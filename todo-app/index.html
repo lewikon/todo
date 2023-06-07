@@ -9,8 +9,14 @@
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" 
     crossorigin="anonymous">
     <script type="module">
-        async function apiLoad() {
-                const importAPI = await import('./api.js')
+        let apiStorage = false;
+        if (!apiStorage) {
+            localLoad();
+        }
+        async function apiLoad(apiStorage) {
+            if (apiStorage) return
+            else {
+              const importAPI = await import('./api.js')
                 const owner = 'Я';
                 (async () => {
             const todoItemList = await importAPI.getTodoList(owner);
@@ -20,16 +26,37 @@
                 todoItemList,
                 onCreateFormSubmit: importAPI.createTodoItem,
                 onDoneClick: importAPI.switchTodoItemDone,
-                onDeleteClick: importAPI.deleteTodoItem,});
-        })();
+                onDeleteClick: importAPI.deleteTodoItem,
+            });
+            })();  
+            }
+            }
+        async function localLoad() {
+                const localAPI = await import('./local.js')
+                const owner = 'Я';
+                let array = [];
+                (async () => {
+            const todoItemList = await localAPI.getTodoList(owner, array);
+            createTodoApp(document.getElementById('todo'), {
+                title: 'Мои дела',
+                owner,
+                todoItemList,
+                onCreateFormSubmit: localAPI.createTodoItem,
+                onDoneClick: localAPI.switchTodoItemDone,
+                onDeleteClick: localAPI.deleteTodoItem,
+            });
+            })();
             }
         import {createTodoApp} from './view.js';
         document.getElementById("storage").addEventListener('click',() => {
-            let apiStorage = false;
             if(!apiStorage) {
+             apiStorage = true;   
              apiLoad();  
+            } else {
+                localLoad();
+                apiStorage = false;
             }
-            apiStorage = true;
+            
         })
         // import {
         //     getTodoList,

@@ -1,13 +1,10 @@
-export let array = [];
-export let listName = '';
 
-export function getTodoList(owner) {
+export function getTodoList(owner, array) {
     let listName = owner;
     let localData = localStorage.getItem(listName);
         if (localData !== null && localData !== '') {
           array = JSON.parse(localData);
         }
-
         for (const itemList of array) {
           let todoItem = createTodoItem(itemList);
           todoList.append(todoItem.item);
@@ -23,7 +20,6 @@ export function switchTodoItemDone() {
         if(ListItem.id == obj.id) ListItem.done = !ListItem.done
       }
       saveList(array,listName);
-
 }
 
 export function deleteTodoItem() {
